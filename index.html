@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zwipi - Coin Guessing Game</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    .game-container {
+      border: 2px solid #000;
+      padding: 20px;
+      text-align: center;
+      width: 300px;
+      margin-bottom: 20px;
+    }
+
+    .cover {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      background-color: #ccc;  /* This cover hides the coin */
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .coin-face {
+      width: 100px;
+      height: 100px;
+      text-align: center;
+      line-height: 100px;
+      font-size: 2em;
+      color: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      /* Initially hidden beneath the cover */
+    }
+
+    /* Simple styling for buttons */
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    #message {
+      margin: 10px 0;
+      min-height: 24px; /* Reserve space for messages */
+    }
+  </style>
+</head>
+<body>
+  <h1>Zwipi - Coin Guessing Game</h1>
+
+  <div class="game-container">
+    <div id="cover" class="cover">
+      <!-- The coin face will be revealed under this cover -->
+      <div id="coinFace" class="coin-face"></div>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <button id="flipBtn">Flip/Spin Coin</button>
+    </div>
+
+    <p id="message"></p>
+
+    <div>
+      <button onclick="guess('Heads')">Guess Heads</button>
+      <button onclick="guess('Tails')">Guess Tails</button>
+    </div>
+
+    <p>Score: <span id="score">0</span></p>
+  </div>
+
+  <script>
+    // Track current hidden coin face: "Heads" or "Tails"
+    let hiddenFace = null;
+
+    // Track player's score
+    let score = 0;
+
+    const flipBtn = document.getElementById('flipBtn');
+    const messageEl = document.getElementById('message');
+    const scoreEl = document.getElementById('score');
+    const coinFaceEl = document.getElementById('coinFace');
+
+    // Function to "flip" or "spin" the coin
+    function flipCoin() {
+      // Randomly choose Heads or Tails
+      hiddenFace = Math.random() < 0.5 ? 'Heads' : 'Tails';
+
+      // Reset the coin display to hidden
+      coinFaceEl.style.top = '100%';  // Move it below the cover
+      coinFaceEl.textContent = '';    // Clear text
+      messageEl.textContent = 'Coin flipped and hidden! Make your guess.';
+
+      // Disable the flip button until the round is done
+      flipBtn.disabled = true;
+    }
+
+    // Function called when user guesses Heads or Tails
+    function guess(guessFace) {
+      if (!hiddenFace) {
+        messageEl.textContent = 'Please flip the coin first!';
+        return;
+      }
+
+      // Reveal the coin face visually
+      coinFaceEl.textContent = hiddenFace;
+      coinFaceEl.style.backgroundColor = hiddenFace === 'Heads' ? '#666' : '#333';
+      coinFaceEl.style.top = '0';  // Slide up to reveal
+
+      // Check if guess is correct
+      if (guessFace === hiddenFace) {
+        score++;
+        messageEl.textContent = `You guessed ${guessFace} and you were RIGHT!`;
+      } else {
+        messageEl.textContent = `You guessed ${guessFace} but it was ${hiddenFace}. Try again!`;
+      }
+
+      // Update score display
+      scoreEl.textContent = score;
+
+      // Re-enable the flip button for the next round
+      flipBtn.disabled = false;
+
+      // Reset hiddenFace for next round
+      hiddenFace = null;
+    }
+
+    // Attach event to Flip button
+    flipBtn.addEventListener('click', flipCoin);
+  </script>
+</body>
+</html>
